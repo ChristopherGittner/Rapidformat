@@ -37,7 +37,7 @@ MainFrame_::MainFrame_( wxWindow* parent, wxWindowID id, const wxString& title, 
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxVERTICAL );
 	
-	mFilepOutput = new wxFilePickerCtrl( m_panel2, idFilepInput, wxEmptyString, wxT("Select the output File"), wxT("*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	mFilepOutput = new wxFilePickerCtrl( m_panel2, idFilepInput, wxEmptyString, wxT("Select the output File"), wxT("*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_SAVE );
 	bSizer8->Add( mFilepOutput, 0, wxALL|wxEXPAND, 5 );
 	
 	mTxtctrlOutput = new wxTextCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_DONTWRAP|wxTE_MULTILINE );
