@@ -330,6 +330,16 @@ void MainFrame::onFormatDone(shared_ptr<FormatThreadData> data)
 
     /* Show Top of Text */
     mTxtctrlOutput->ShowPosition(0);
+
+	if (data->indentation)
+	{
+		wxMessageBox("Indentation not 0 at EOF", "Warning");
+	}
+
+	if (data->indentationBelowZero)
+	{
+		wxMessageBox("Indentation went Below 0 while formatting", "Warning");
+	}
 }
 
 void MainFrame::mMenubarFileExitOnMenuSelection(wxCommandEvent& event)
