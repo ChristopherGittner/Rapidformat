@@ -14,24 +14,24 @@ using namespace std;
 class ExtractedQuote
 {
     public:
-        ExtractedQuote(size_t position, size_t length, const string& text);
+        ExtractedQuote(size_t position, size_t length, const wstring& text);
 
         size_t getPosition() { return mPosition; }
         size_t getLength() { return mLength; }
-        string getText() { return mText; }
+        wstring getText() { return mText; }
 
     protected:
     private:
         size_t mPosition;
         size_t mLength;
-        string mText;
+        wstring mText;
 };
 
 struct FormatThreadData
 {
-    vector<string> input;
-    string output;
-    vector<string> keywords;
+    vector<wstring> input;
+    wstring output;
+    vector<wstring> keywords;
     size_t indentation;
 	string indentationString;
 	bool indentationBelowZero;
@@ -67,7 +67,7 @@ class MainFrame : public MainFrame_
 
         bool mInitialized = false;
 
-        vector<string> mKeywords;
+        vector<wstring> mKeywords;
 
 		ProgressDialog* mProgressDialog = nullptr;
 };

@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include <boost/bind.hpp>
+#include <boost/locale.hpp>
 
 #include <wx/wx.h>
 
@@ -16,7 +17,7 @@
 
 wxDEFINE_EVENT(MY_NEW_TYPE, wxCommandEvent);
 
-ExtractedQuote::ExtractedQuote(size_t position, size_t length, const string& text)
+ExtractedQuote::ExtractedQuote(size_t position, size_t length, const wstring& text)
 {
     mPosition = position;
     mLength = length;
@@ -109,7 +110,7 @@ void MainFrame::onInit()
     {
         if(line.size() > 0 && line[0] != '#')
         {
-            mKeywords.emplace_back(line);
+            mKeywords.emplace_back(line.begin(), line.end());
         }
     }
 
@@ -137,16 +138,18 @@ void MainFrame::load()
     mTxtctrlInput->Clear();
 
     string line;
-	string input;
+	wstring input;
 
 	bool firstLine = true;
     while(getline(ifs, line))
     {
+        wstring wline = boost::locale::conv::to_utf<wchar_t>(line, "Latin1");
+
 		if (!firstLine)
 		{
-			input += "\n";
+			input += L"\n";
 		}
-		input += line;
+		input += wline;
 		firstLine = false;
     }
 
@@ -187,7 +190,7 @@ void MainFrame::save()
         {
             ofs << endl;
         }
-        ofs << mTxtctrlOutput->GetLineText(i);
+        ofs << boost::locale::conv::from_utf<wchar_t>(mTxtctrlOutput->GetLineText(i), "Latin-1");
         firstLine = false;
     }
 }
@@ -204,32 +207,32 @@ void MainFrame::enableControls()
 
 void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
 {
-    data->output = "";
+    data->output = L"";
 	data->indentation = 0;
     data->indentationBelowZero = false;
 
-    regex trimWhitespace("^[ \\t]+|[ \\t]+$");
-    regex indentingExpression("\\b(CASE|DEFAULT|DO|ELSE|ERROR|FUNC|MODULE|PROC|SYSMODULE|TEST|THEN|TRAP)\\b");
-    regex dedentingExpression("\\b(CASE|DEFAULT|ELSE|ELSEIF|ENDFOR|ENDFUNC|ENDIF|ENDMODULE|ENDPROC|ENDTEST|ENDTRAP|ENDWHILE|ERROR)\\b");
-    regex stripQuotes("\"[^\"]*\"");
-    vector<shared_ptr<regex>> knownKeywordsExpressions;
+    wregex trimWhitespace(L"^[ \\t]+|[ \\t]+$");
+    wregex indentingExpression(L"\\b(CASE|DEFAULT|DO|ELSE|ERROR|FUNC|MODULE|PROC|SYSMODULE|TEST|THEN|TRAP)\\b");
+    wregex dedentingExpression(L"\\b(CASE|DEFAULT|ELSE|ELSEIF|ENDFOR|ENDFUNC|ENDIF|ENDMODULE|ENDPROC|ENDTEST|ENDTRAP|ENDWHILE|ERROR)\\b");
+    wregex stripQuotes(L"\"[^\"]*\"");
+    vector<shared_ptr<wregex>> knownKeywordsExpressions;
 
     for(auto keyword : data->keywords)
     {
-        knownKeywordsExpressions.push_back(make_shared<regex>("\\b(" + keyword + ")\\b", regex_constants::icase));
+        knownKeywordsExpressions.push_back(make_shared<wregex>(L"\\b(" + keyword + L")\\b", regex_constants::icase));
     }
 
     for(size_t lineNumber = 0; lineNumber != data->input.size(); ++lineNumber)
     {
-        string line = data->input[lineNumber];
+        wstring line = data->input[lineNumber];
 
         /* Remove Whitespace */
-        line = regex_replace(line, trimWhitespace, "");
+        line = regex_replace(line, trimWhitespace, L"");
 
         /* Extract Comment */
-        smatch match;
+        wsmatch match;
         vector<ExtractedQuote> quotes;
-        string strippedLine = line;
+        wstring strippedLine = line;
 
         while(regex_search(strippedLine, match, stripQuotes))
         {
@@ -237,7 +240,7 @@ void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
         }
 
         size_t commentStart = strippedLine.find('!');
-        string comment = "";
+        wstring comment = L"";
 
         if(commentStart != string::npos)
         {
