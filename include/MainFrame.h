@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -22,6 +23,15 @@ class ExtractedQuote
         size_t mPosition;
         size_t mLength;
         string mText;
+};
+
+struct FormatThreadData
+{
+    vector<string> input;
+    vector<string> output;
+    vector<string> keywords;
+    size_t indentation;
+    bool indentationBelowZero;
 };
 
 class MainFrame : public MainFrame_
@@ -44,7 +54,9 @@ class MainFrame : public MainFrame_
         void onInit();
         void load();
         void save();
-        void format();
+
+        static void format(shared_ptr<FormatThreadData> data, MainFrame* frame);
+		void onFormatDone(shared_ptr<FormatThreadData> data);
 
         bool mInitialized = false;
 

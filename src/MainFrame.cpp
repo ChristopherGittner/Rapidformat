@@ -1,15 +1,18 @@
 #include "MainFrame.h"
 
-#include <vector>
 #include <fstream>
 #include <regex>
-#include <memory>
+#include <thread>
+
+#include <boost/bind.hpp>
 
 #include <wx/wx.h>
 
 #include "RapidformatApp.h"
 #include "PreferencesFrame.h"
 #include "Preferences.h"
+
+wxDEFINE_EVENT(MY_NEW_TYPE, wxCommandEvent);
 
 ExtractedQuote::ExtractedQuote(size_t position, size_t length, const string& text)
 {
@@ -47,7 +50,17 @@ void MainFrame::mToolbarReloadOnToolClicked(wxCommandEvent& event)
 
 void MainFrame::mToolbarFormatOnToolClicked(wxCommandEvent& event)
 {
-    format();
+    auto data = make_shared<FormatThreadData>();
+
+    for(int i = 0; i != mTxtctrlInput->GetNumberOfLines(); ++i)
+    {
+        data->input.emplace_back(mTxtctrlInput->GetLineText(i));
+    }
+
+    data->keywords = mKeywords;
+
+    thread t(format, data, this);
+    t.detach();
 }
 
 void MainFrame::mToolbarSaveOnToolClicked(wxCommandEvent& event)
@@ -156,12 +169,10 @@ void MainFrame::save()
     }
 }
 
-void MainFrame::format()
+void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
 {
-    mTxtctrlOutput->Clear();
-
-    int indentation = 0;
-    bool indentationBelowZero = false;
+    data->output.clear();
+    data->indentationBelowZero = false;
 
     regex trimWhitespace("^[ \\t]+|[ \\t]+$");
     regex indentingExpression("\\b(CASE|DEFAULT|DO|ELSE|ERROR|FUNC|MODULE|PROC|SYSMODULE|TEST|THEN|TRAP)\\b");
@@ -169,7 +180,7 @@ void MainFrame::format()
     regex stripQuotes("\"[^\"]*\"");
     vector<shared_ptr<regex>> knownKeywordsExpressions;
 
-    for(auto keyword : mKeywords)
+    for(auto keyword : data->keywords)
     {
         knownKeywordsExpressions.push_back(make_shared<regex>("\\b(" + keyword + ")\\b", regex_constants::icase));
     }
@@ -184,9 +195,9 @@ void MainFrame::format()
         indentationString = string(Preferences::getInstance().getSpaceCount(), ' ');
     }
 
-    for(int lineNumber = 0; lineNumber != mTxtctrlInput->GetNumberOfLines(); ++lineNumber)
+    for(size_t lineNumber = 0; lineNumber != data->input.size(); ++lineNumber)
     {
-        string line = mTxtctrlInput->GetLineText(lineNumber);
+        string line = data->input[lineNumber];
 
         /* Remove Whitespace */
         line = regex_replace(line, trimWhitespace, "");
@@ -220,7 +231,7 @@ void MainFrame::format()
         /* Correct known Keywords */
         for(size_t i = 0; i != knownKeywordsExpressions.size(); ++i)
         {
-            line = regex_replace(line, *(knownKeywordsExpressions[i]), mKeywords[i]);
+            line = regex_replace(line, *(knownKeywordsExpressions[i]), data->keywords[i]);
         }
 
         /* Insert Quotes */
@@ -235,44 +246,49 @@ void MainFrame::format()
         /* Apply Indentation */
         if(regex_search(line, dedentingExpression))
         {
-            if(indentation > 0)
+            if(data->indentation > 0)
             {
-                --indentation;
+                --data->indentation;
             }
             else
             {
-                indentationBelowZero = true;
+                data->indentationBelowZero = true;
             }
         }
 
-        for(int i = 0; i != indentation; ++i)
+        for(size_t i = 0; i != data->indentation; ++i)
         {
             line = indentationString + line;
         }
 
         if(regex_search(line, indentingExpression))
         {
-            ++indentation;
+            ++data->indentation;
         }
 
-        mTxtctrlOutput->AppendText(line + "\n");
+        if(lineNumber != data->input.size() - 1)
+        {
+            data->output.emplace_back(line + "\n");
+        }
+        else
+        {
+            data->output.emplace_back(line);
+        }
     }
 
-    /* Remove the Last Newline */
-    mTxtctrlOutput->Remove(mTxtctrlOutput->GetLastPosition() - 1, mTxtctrlOutput->GetLastPosition());
+    wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(boost::bind(&MainFrame::onFormatDone, frame, data));
+}
+
+void MainFrame::onFormatDone(shared_ptr<FormatThreadData> data)
+{
+    mTxtctrlOutput->Clear();
+    for(auto line : data->output)
+    {
+        mTxtctrlOutput->AppendText(line);
+    }
+
     /* Show Top of Text */
     mTxtctrlOutput->ShowPosition(0);
-
-    /* Check for Errors */
-    if(indentationBelowZero)
-    {
-        wxMessageBox("Indentation went below 0", "Warning");
-    }
-
-    if(indentation > 0)
-    {
-        wxMessageBox("Indentation not 0 at EOF", "Warning");
-    }
 }
 
 void MainFrame::mMenubarFileExitOnMenuSelection(wxCommandEvent& event)
