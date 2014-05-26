@@ -264,9 +264,6 @@ void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
             line.insert(quote->getPosition(), quote->getText());
         }
 
-        /* Attach Comment */
-        line += comment;
-
         /* Apply Indentation */
         if(regex_search(line, dedentingExpression))
         {
@@ -290,7 +287,10 @@ void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
             ++data->indentation;
         }
 
-        if(lineNumber != data->input.size() - 1)
+		/* Attach Comment */
+		line += comment;
+
+		if (lineNumber != data->input.size() - 1)
         {
             data->output.emplace_back(line + "\n");
         }
