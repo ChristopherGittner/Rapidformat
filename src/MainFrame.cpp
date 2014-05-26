@@ -56,7 +56,7 @@ void MainFrame::mToolbarFormatOnToolClicked(wxCommandEvent& event)
 
     for(int i = 0; i != mTxtctrlInput->GetNumberOfLines(); ++i)
     {
-        data->input.emplace_back(mTxtctrlInput->GetLineText(i));
+		data->input.emplace_back(mTxtctrlInput->GetLineText(i));
     }
 
     data->keywords = mKeywords;
@@ -139,15 +139,19 @@ void MainFrame::load()
     string line;
 	string input;
 
+	bool firstLine = true;
     while(getline(ifs, line))
     {
-		input += line + "\n";
+		if (!firstLine)
+		{
+			input += "\n";
+		}
+		input += line;
+		firstLine = false;
     }
 
 	mTxtctrlInput->SetValue(input);
 
-    /* Remove the Last Newline */
-    mTxtctrlInput->Remove(mTxtctrlInput->GetLastPosition() - 1, mTxtctrlInput->GetLastPosition());
     /* Show Top of Text */
     mTxtctrlInput->ShowPosition(0);
 }
