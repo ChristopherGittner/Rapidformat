@@ -16,33 +16,43 @@ MainFrame_::MainFrame_( wxWindow* parent, wxWindowID id, const wxString& title, 
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
 	
+	m_panel2 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer13;
+	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
+	
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxVERTICAL );
 	
-	mFilepInput = new wxFilePickerCtrl( this, idFilepInput, wxEmptyString, wxT("Select the input File"), wxT("*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	mFilepInput = new wxFilePickerCtrl( m_panel2, idFilepInput, wxEmptyString, wxT("Select the input File"), wxT("*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
 	bSizer7->Add( mFilepInput, 0, wxALL|wxEXPAND, 5 );
 	
-	mTxtctrlInput = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_DONTWRAP|wxTE_MULTILINE|wxTE_READONLY );
+	mTxtctrlInput = new wxTextCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_DONTWRAP|wxTE_MULTILINE|wxTE_READONLY );
 	mTxtctrlInput->SetFont( wxFont( 10, 76, 90, 90, false, wxT("Monospace") ) );
 	
 	bSizer7->Add( mTxtctrlInput, 1, wxALL|wxEXPAND, 5 );
 	
 	
-	bSizer1->Add( bSizer7, 1, wxEXPAND, 5 );
+	bSizer13->Add( bSizer7, 1, wxEXPAND, 0 );
 	
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxVERTICAL );
 	
-	mFilepOutput = new wxFilePickerCtrl( this, idFilepInput, wxEmptyString, wxT("Select the output File"), wxT("*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	mFilepOutput = new wxFilePickerCtrl( m_panel2, idFilepInput, wxEmptyString, wxT("Select the output File"), wxT("*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
 	bSizer8->Add( mFilepOutput, 0, wxALL|wxEXPAND, 5 );
 	
-	mTxtctrlOutput = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_DONTWRAP|wxTE_MULTILINE );
+	mTxtctrlOutput = new wxTextCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_DONTWRAP|wxTE_MULTILINE );
 	mTxtctrlOutput->SetFont( wxFont( 10, 76, 90, 90, false, wxT("Monospace") ) );
 	
 	bSizer8->Add( mTxtctrlOutput, 1, wxALL|wxEXPAND, 5 );
 	
 	
-	bSizer1->Add( bSizer8, 1, wxEXPAND, 5 );
+	bSizer13->Add( bSizer8, 1, wxEXPAND, 0 );
+	
+	
+	m_panel2->SetSizer( bSizer13 );
+	m_panel2->Layout();
+	bSizer13->Fit( m_panel2 );
+	bSizer1->Add( m_panel2, 1, wxEXPAND | wxALL, 0 );
 	
 	
 	this->SetSizer( bSizer1 );
@@ -116,39 +126,49 @@ PreferencesFrame_::PreferencesFrame_( wxWindow* parent, wxWindowID id, const wxS
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
 	
+	m_panel1 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer11;
+	bSizer11 = new wxBoxSizer( wxVERTICAL );
+	
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxVERTICAL );
 	
-	mChkbUseTabs = new wxCheckBox( this, wxID_ANY, wxT("Use Tabs"), wxDefaultPosition, wxDefaultSize, 0 );
+	mChkbUseTabs = new wxCheckBox( m_panel1, wxID_ANY, wxT("Use Tabs"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer7->Add( mChkbUseTabs, 0, wxALL, 5 );
 	
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxHORIZONTAL );
 	
-	mStattxtSpaces = new wxStaticText( this, wxID_ANY, wxT("Spaces"), wxDefaultPosition, wxDefaultSize, 0 );
+	mStattxtSpaces = new wxStaticText( m_panel1, wxID_ANY, wxT("Spaces"), wxDefaultPosition, wxDefaultSize, 0 );
 	mStattxtSpaces->Wrap( -1 );
 	bSizer8->Add( mStattxtSpaces, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	mTxtctrlSpaceCount = new wxTextCtrl( this, wxID_ANY, wxT("2"), wxDefaultPosition, wxSize( 30,-1 ), 0 );
+	mTxtctrlSpaceCount = new wxTextCtrl( m_panel1, wxID_ANY, wxT("2"), wxDefaultPosition, wxSize( 30,-1 ), 0 );
 	bSizer8->Add( mTxtctrlSpaceCount, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
 	
 	bSizer7->Add( bSizer8, 1, wxEXPAND, 5 );
 	
 	
-	bSizer6->Add( bSizer7, 0, 0, 5 );
+	bSizer11->Add( bSizer7, 0, 0, 5 );
 	
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
 	
-	mBtnSave = new wxButton( this, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	mBtnSave = new wxButton( m_panel1, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer9->Add( mBtnSave, 0, wxALL, 5 );
 	
-	mBtnCancel = new wxButton( this, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	mBtnCancel = new wxButton( m_panel1, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer9->Add( mBtnCancel, 0, wxALL, 5 );
 	
 	
-	bSizer6->Add( bSizer9, 1, wxEXPAND, 5 );
+	bSizer11->Add( bSizer9, 1, wxEXPAND, 5 );
+	
+	
+	m_panel1->SetSizer( bSizer11 );
+	m_panel1->Layout();
+	bSizer11->Fit( m_panel1 );
+	bSizer6->Add( m_panel1, 1, wxEXPAND | wxALL, 0 );
 	
 	
 	this->SetSizer( bSizer6 );

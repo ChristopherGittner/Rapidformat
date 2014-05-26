@@ -18,6 +18,7 @@
 #include <wx/settings.h>
 #include <wx/textctrl.h>
 #include <wx/sizer.h>
+#include <wx/panel.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
@@ -49,6 +50,7 @@ class MainFrame_ : public wxFrame
 	private:
 	
 	protected:
+		wxPanel* m_panel2;
 		wxFilePickerCtrl* mFilepInput;
 		wxTextCtrl* mTxtctrlInput;
 		wxFilePickerCtrl* mFilepOutput;
@@ -87,6 +89,7 @@ class PreferencesFrame_ : public wxFrame
 	private:
 	
 	protected:
+		wxPanel* m_panel1;
 		wxCheckBox* mChkbUseTabs;
 		wxStaticText* mStattxtSpaces;
 		wxTextCtrl* mTxtctrlSpaceCount;
