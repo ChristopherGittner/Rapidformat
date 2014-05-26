@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Feb 26 2014)
+// C++ code generated with wxFormBuilder (version May 26 2014)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -37,7 +37,7 @@ MainFrame_::MainFrame_( wxWindow* parent, wxWindowID id, const wxString& title, 
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxVERTICAL );
 	
-	mFilepOutput = new wxFilePickerCtrl( m_panel2, idFilepInput, wxEmptyString, wxT("Select the output File"), wxT("*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_SAVE );
+	mFilepOutput = new wxFilePickerCtrl( m_panel2, idFilepInput, wxEmptyString, wxT("Select the output File"), wxT("*"), wxDefaultPosition, wxDefaultSize, wxFLP_SAVE );
 	bSizer8->Add( mFilepOutput, 0, wxALL|wxEXPAND, 5 );
 	
 	mTxtctrlOutput = new wxTextCtrl( m_panel2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_DONTWRAP|wxTE_MULTILINE );

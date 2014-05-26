@@ -204,7 +204,7 @@ void MainFrame::enableControls()
 
 void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
 {
-    data->output.clear();
+    data->output = "";
 	data->indentation = 0;
     data->indentationBelowZero = false;
 
@@ -292,11 +292,11 @@ void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
 
 		if (lineNumber != data->input.size() - 1)
         {
-            data->output.emplace_back(line + "\n");
+            data->output += line + "\n";
         }
         else
         {
-            data->output.emplace_back(line);
+            data->output += line;
         }
 
 		int progress = ((double)lineNumber / (double)data->input.size()) * 100;
@@ -315,18 +315,12 @@ void MainFrame::onFormatDone(shared_ptr<FormatThreadData> data)
 {
     mTxtctrlOutput->Clear();
 
-	string output;
-	for (string line : data->output)
-	{
-		output += line;
-	}
-
 	mProgressDialog->Close();
 	delete mProgressDialog;
 
 	enableControls();
 
-	mTxtctrlOutput->SetValue(output);
+	mTxtctrlOutput->SetValue(data->output);
 
     /* Show Top of Text */
     mTxtctrlOutput->ShowPosition(0);

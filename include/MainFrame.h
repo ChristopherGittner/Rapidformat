@@ -30,7 +30,7 @@ class ExtractedQuote
 struct FormatThreadData
 {
     vector<string> input;
-    vector<string> output;
+    string output;
     vector<string> keywords;
     size_t indentation;
 	string indentationString;
