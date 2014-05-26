@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Nov  5 2013)
+// C++ code generated with wxFormBuilder (version Feb 26 2014)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -47,14 +47,14 @@ MainFrame_::MainFrame_( wxWindow* parent, wxWindowID id, const wxString& title, 
 	
 	this->SetSizer( bSizer1 );
 	this->Layout();
-	m_toolBar1 = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY ); 
-	m_toolBar1->AddTool( idToolbarReload, wxT("Reload"), wxArtProvider::GetBitmap( wxART_REDO, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxT("Reload input File"), NULL ); 
+	mToolbar = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY ); 
+	mToolbar->AddTool( idToolbarReload, wxT("Reload"), wxArtProvider::GetBitmap( wxART_REDO, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxT("Reload input File"), NULL ); 
 	
-	m_toolBar1->AddTool( idToolbarEvaluate, wxT("Evaluate"), wxArtProvider::GetBitmap( wxART_EXECUTABLE_FILE, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxT("Format"), NULL ); 
+	mToolbar->AddTool( idToolbarEvaluate, wxT("Evaluate"), wxArtProvider::GetBitmap( wxART_EXECUTABLE_FILE, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxT("Format"), NULL ); 
 	
-	m_toolBar1->AddTool( idToolbarSave, wxT("Save"), wxArtProvider::GetBitmap( wxART_FILE_SAVE, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxT("Save output to File"), NULL ); 
+	mToolbar->AddTool( idToolbarSave, wxT("Save"), wxArtProvider::GetBitmap( wxART_FILE_SAVE, wxART_TOOLBAR ), wxNullBitmap, wxITEM_NORMAL, wxEmptyString, wxT("Save output to File"), NULL ); 
 	
-	m_toolBar1->Realize(); 
+	mToolbar->Realize(); 
 	
 	mStatusBar = this->CreateStatusBar( 1, wxST_SIZEGRIP, wxID_ANY );
 	mMenubar = new wxMenuBar( 0 );
@@ -172,6 +172,29 @@ PreferencesFrame_::~PreferencesFrame_()
 	mBtnSave->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PreferencesFrame_::mBtnSaveOnButtonClick ), NULL, this );
 	mBtnCancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( PreferencesFrame_::mBtnCancelOnButtonClick ), NULL, this );
 	
+}
+
+ProgressDialog_::ProgressDialog_( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizer9;
+	bSizer9 = new wxBoxSizer( wxVERTICAL );
+	
+	mGauge = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL|wxGA_SMOOTH );
+	mGauge->SetValue( 0 ); 
+	bSizer9->Add( mGauge, 0, wxALL, 5 );
+	
+	
+	this->SetSizer( bSizer9 );
+	this->Layout();
+	bSizer9->Fit( this );
+	
+	this->Centre( wxBOTH );
+}
+
+ProgressDialog_::~ProgressDialog_()
+{
 }
 
 AboutDialog_::AboutDialog_( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )

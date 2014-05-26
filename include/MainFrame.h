@@ -7,6 +7,8 @@
 #include <vector>
 #include <memory>
 
+class ProgressDialog;
+
 using namespace std;
 
 class ExtractedQuote
@@ -31,7 +33,8 @@ struct FormatThreadData
     vector<string> output;
     vector<string> keywords;
     size_t indentation;
-    bool indentationBelowZero;
+	string indentationString;
+	bool indentationBelowZero;
 };
 
 class MainFrame : public MainFrame_
@@ -55,12 +58,18 @@ class MainFrame : public MainFrame_
         void load();
         void save();
 
+		void disableControls();
+		void enableControls();
+
         static void format(shared_ptr<FormatThreadData> data, MainFrame* frame);
+		void onProgressUpdate(int progress);
 		void onFormatDone(shared_ptr<FormatThreadData> data);
 
         bool mInitialized = false;
 
         vector<string> mKeywords;
+
+		ProgressDialog* mProgressDialog = nullptr;
 };
 
 #endif // MAINFRAME_H

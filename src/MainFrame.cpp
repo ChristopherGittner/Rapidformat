@@ -3,6 +3,7 @@
 #include <fstream>
 #include <regex>
 #include <thread>
+#include <sstream>
 
 #include <boost/bind.hpp>
 
@@ -11,6 +12,7 @@
 #include "RapidformatApp.h"
 #include "PreferencesFrame.h"
 #include "Preferences.h"
+#include "ProgressDialog.h"
 
 wxDEFINE_EVENT(MY_NEW_TYPE, wxCommandEvent);
 
@@ -58,9 +60,23 @@ void MainFrame::mToolbarFormatOnToolClicked(wxCommandEvent& event)
     }
 
     data->keywords = mKeywords;
+	if (Preferences::getInstance().getUseTabs())
+	{
+		data->indentationString = "\t";
+	}
+	else
+	{
+		data->indentationString = string(Preferences::getInstance().getSpaceCount(), ' ');
+	}
 
-    thread t(format, data, this);
+	mProgressDialog = new ProgressDialog(this);
+	mProgressDialog->SetTitle("Formatting. Please Wait...");
+	disableControls();
+
+	thread t(format, data, this);
     t.detach();
+
+	mProgressDialog->Show();
 }
 
 void MainFrame::mToolbarSaveOnToolClicked(wxCommandEvent& event)
@@ -121,11 +137,14 @@ void MainFrame::load()
     mTxtctrlInput->Clear();
 
     string line;
+	string input;
 
     while(getline(ifs, line))
     {
-        mTxtctrlInput->AppendText(line + "\n");
+		input += line + "\n";
     }
+
+	mTxtctrlInput->SetValue(input);
 
     /* Remove the Last Newline */
     mTxtctrlInput->Remove(mTxtctrlInput->GetLastPosition() - 1, mTxtctrlInput->GetLastPosition());
@@ -169,9 +188,20 @@ void MainFrame::save()
     }
 }
 
+void MainFrame::disableControls()
+{
+	mToolbar->Disable();
+}
+
+void MainFrame::enableControls()
+{
+	mToolbar->Enable();
+}
+
 void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
 {
     data->output.clear();
+	data->indentation = 0;
     data->indentationBelowZero = false;
 
     regex trimWhitespace("^[ \\t]+|[ \\t]+$");
@@ -183,16 +213,6 @@ void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
     for(auto keyword : data->keywords)
     {
         knownKeywordsExpressions.push_back(make_shared<regex>("\\b(" + keyword + ")\\b", regex_constants::icase));
-    }
-
-    string indentationString = "";
-    if(Preferences::getInstance().getUseTabs())
-    {
-        indentationString = "\t";
-    }
-    else
-    {
-        indentationString = string(Preferences::getInstance().getSpaceCount(), ' ');
     }
 
     for(size_t lineNumber = 0; lineNumber != data->input.size(); ++lineNumber)
@@ -258,7 +278,7 @@ void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
 
         for(size_t i = 0; i != data->indentation; ++i)
         {
-            line = indentationString + line;
+            line = data->indentationString + line;
         }
 
         if(regex_search(line, indentingExpression))
@@ -274,18 +294,35 @@ void MainFrame::format(shared_ptr<FormatThreadData> data, MainFrame* frame)
         {
             data->output.emplace_back(line);
         }
+
+		int progress = ((double)lineNumber / (double)data->input.size()) * 100;
+		wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(boost::bind(&MainFrame::onProgressUpdate, frame, progress));
     }
 
     wxTheApp->GetTopWindow()->GetEventHandler()->CallAfter(boost::bind(&MainFrame::onFormatDone, frame, data));
 }
 
+void MainFrame::onProgressUpdate(int progress)
+{
+	mProgressDialog->setProgress(progress);
+}
+
 void MainFrame::onFormatDone(shared_ptr<FormatThreadData> data)
 {
     mTxtctrlOutput->Clear();
-    for(auto line : data->output)
-    {
-        mTxtctrlOutput->AppendText(line);
-    }
+
+	string output;
+	for (string line : data->output)
+	{
+		output += line;
+	}
+
+	mProgressDialog->Close();
+	delete mProgressDialog;
+
+	enableControls();
+
+	mTxtctrlOutput->SetValue(output);
 
     /* Show Top of Text */
     mTxtctrlOutput->ShowPosition(0);

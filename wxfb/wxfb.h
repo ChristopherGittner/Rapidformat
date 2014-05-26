@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Nov  5 2013)
+// C++ code generated with wxFormBuilder (version Feb 26 2014)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -28,6 +28,7 @@
 #include <wx/checkbox.h>
 #include <wx/stattext.h>
 #include <wx/button.h>
+#include <wx/gauge.h>
 #include <wx/dialog.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -52,7 +53,7 @@ class MainFrame_ : public wxFrame
 		wxTextCtrl* mTxtctrlInput;
 		wxFilePickerCtrl* mFilepOutput;
 		wxTextCtrl* mTxtctrlOutput;
-		wxToolBar* m_toolBar1;
+		wxToolBar* mToolbar;
 		wxStatusBar* mStatusBar;
 		wxMenuBar* mMenubar;
 		wxMenu* mMenubarFile;
@@ -72,7 +73,7 @@ class MainFrame_ : public wxFrame
 	
 	public:
 		
-		MainFrame_( wxWindow* parent, wxWindowID id = idMainFrame, const wxString& title = wxT("Rapidformat"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1024,768 ), long style = wxCLOSE_BOX|wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		MainFrame_( wxWindow* parent, wxWindowID id = idMainFrame, const wxString& title = wxT("Rapidformat"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 800,600 ), long style = wxCLOSE_BOX|wxDEFAULT_FRAME_STYLE|wxMAXIMIZE|wxMAXIMIZE_BOX|wxMINIMIZE_BOX|wxTAB_TRAVERSAL );
 		
 		~MainFrame_();
 	
@@ -104,6 +105,23 @@ class PreferencesFrame_ : public wxFrame
 		PreferencesFrame_( wxWindow* parent, wxWindowID id = idPreferencesFrame, const wxString& title = wxT("Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 		
 		~PreferencesFrame_();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class ProgressDialog_
+///////////////////////////////////////////////////////////////////////////////
+class ProgressDialog_ : public wxDialog 
+{
+	private:
+	
+	protected:
+		wxGauge* mGauge;
+	
+	public:
+		
+		ProgressDialog_( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0 ); 
+		~ProgressDialog_();
 	
 };
 
