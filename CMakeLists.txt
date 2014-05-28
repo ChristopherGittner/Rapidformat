@@ -19,6 +19,7 @@ find_package(wxWidgets REQUIRED net gl core base)
 include(${wxWidgets_USE_FILE})
 target_link_libraries(${TARGET} ${wxWidgets_LIBRARIES})
 
+set(Boost_USE_STATIC_LIBS TRUE)
 find_package(Boost COMPONENTS locale REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(${TARGET} ${Boost_LIBRARIES})
