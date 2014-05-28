@@ -33,7 +33,7 @@ struct FormatThreadData
     wstring output;
     vector<wstring> keywords;
     size_t indentation;
-	string indentationString;
+	wstring indentationString;
 	bool indentationBelowZero;
 };
 

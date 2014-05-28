@@ -63,11 +63,11 @@ void MainFrame::mToolbarFormatOnToolClicked(wxCommandEvent& event)
     data->keywords = mKeywords;
 	if (Preferences::getInstance().getUseTabs())
 	{
-		data->indentationString = "\t";
+		data->indentationString = L"\t";
 	}
 	else
 	{
-		data->indentationString = string(Preferences::getInstance().getSpaceCount(), ' ');
+		data->indentationString = wstring(Preferences::getInstance().getSpaceCount(), L' ');
 	}
 
 	mProgressDialog = new ProgressDialog(this);
@@ -127,7 +127,11 @@ void MainFrame::load()
         return;
     }
 
-    ifstream ifs(inPath);
+    #ifdef __LINUX__
+        ifstream ifs(inPath);
+    #else
+        wifstream ifs(inPath);
+    #endif // __LINUX__
 
     if(!ifs.is_open())
     {
@@ -137,19 +141,31 @@ void MainFrame::load()
 
     mTxtctrlInput->Clear();
 
-    string line;
+    #ifdef __LINUX__
+        string line;
+    #else
+        wstring line;
+    #endif // __LINUX__
+
 	wstring input;
 
 	bool firstLine = true;
     while(getline(ifs, line))
     {
-        wstring wline = boost::locale::conv::to_utf<wchar_t>(line, "Latin1");
-
 		if (!firstLine)
 		{
 			input += L"\n";
 		}
-		input += wline;
+
+		#ifdef __LINUX__
+            for(unsigned char c : line)
+            {
+                input += c;
+            }
+		#else
+            input += line;
+		#endif // __LINUX__
+
 		firstLine = false;
     }
 
@@ -175,7 +191,11 @@ void MainFrame::save()
         return;
     }
 
-    ofstream ofs(outPath);
+    #ifdef __LINUX__
+        ofstream ofs(outPath);
+    #else
+        wofstream ofs(outPath);
+    #endif // __LINUX__
 
     if(!ofs.is_open())
     {
@@ -190,7 +210,11 @@ void MainFrame::save()
         {
             ofs << endl;
         }
-        ofs << boost::locale::conv::from_utf<wchar_t>(mTxtctrlOutput->GetLineText(i), "Latin-1");
+        #ifdef __LINUX__
+            ofs << boost::locale::conv::from_utf<wchar_t>(mTxtctrlOutput->GetLineText(i), "Latin1");
+        #else
+            ofs << mTxtctrlOutput->GetLineText(i);
+        #endif // __LINUX__
         firstLine = false;
     }
 }
