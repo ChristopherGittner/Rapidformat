@@ -3,4 +3,6 @@ bin
 *.xml
 *.depend
 *.layout
-
+build
+.kdev4
+Rapidformat.kdev4

@@ -1,10 +1,9 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.0)
 project (Rapidformat)
 
 set(TARGET rapidformat)
 
-aux_source_directory(${CMAKE_SOURCE_DIR}/src SOURCES)
-set(SOURCES ${SOURCES} ${CMAKE_SOURCE_DIR}/wxfb/wxfb.cpp)
+set(SOURCES src/sdf.py src/main.cpp src/MainFrame.cpp src/Preferences.cpp src/PreferencesFrame.cpp src/ProgressDialog.cpp src/RapidformatApp.cpp wxfb/wxfb.cpp)
 
 if(WIN32)
     add_executable(${TARGET} WIN32 ${SOURCES})
@@ -12,8 +11,8 @@ else()
     add_executable(${TARGET} ${SOURCES})
 endif()
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/wxfb)
+include_directories(include)
+include_directories(wxfb)
 
 find_package(wxWidgets REQUIRED net gl core base)
 include(${wxWidgets_USE_FILE})
